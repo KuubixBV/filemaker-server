@@ -1,0 +1,8 @@
+*.env
+/data/*
+/certificates/*
+/license/*
+Assisted Install.txt
+Assisted Install.txt.bak
+*.deb
+*.deb*
