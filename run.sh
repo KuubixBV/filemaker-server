@@ -12,12 +12,13 @@ docker run                                                                      
  --privileged                                                                           \
  --name $name                                                                           \
  --hostname $hostname                                                                   \
- --publish $httpPort:80                                                                 \
- --publish $httpsPort:443                                                               \
- --publish $pjBridgePort:4444                                                           \
- --publish $filemakerPort:5003                                                          \
- --volume $filemakerInstallPath:/install/                                               \
- --volume $certificatePath:/install/certificates/                                       \
- --volume $filemakerAutoInstallerPath:/install/auto/                                    \
+ --publish $httpPort:"80"                                                               \
+ --publish $httpsPort:"443"                                                             \
+ --publish $pjBridgePort:"4444"                                                         \
+ --publish $filemakerPort:"5003"                                                        \
+ --volume $filemakerInstallPath:"/install/"                                             \
+ --volume $certificatePath:"/install/certificates/"                                     \
+ --volume $filemakerAutoInstallerPath:"/install/auto/"                                  \
  --volume $filemakerDataPath:"/opt/FileMaker/FileMaker Server/Data/"                    \
- --volume $filemakerServerServicePath:"/install/shortcuts/" fmsdocker:ubuntu22.04-v1
+ --volume $filemakerServerServicePath:"/install/shortcuts/"                             \
+ fmsdocker:ubuntu22.04-v1
