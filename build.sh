@@ -1,11 +1,7 @@
 #!/bin/bash
-source ./filemaker-installs/auto/.env
-docker build -t fmsdocker:ubuntu22.04-v1 ./
-sh ./run.sh
+source ./init.sh
 
-# Check if .env is loaded correctly
-if [ ! -n "$name" ]; then
-   echo "Could not load needed data... Do you have a .env file? Are you missing key-values?"
-   exit 1
-fi
-docker exec -it $name sh /install/auto/init.sh
+# Build docker for version ubuntu and version filemaker
+echo "Trying to build: fmsdocker:ubuntu22.04-fms$VERSION"
+docker image build -t fmsdocker:ubuntu22.04-fms$VERSION ./ --build-arg VERSION=$VERSION
+bash ./up.sh

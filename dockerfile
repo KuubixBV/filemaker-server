@@ -1,5 +1,6 @@
 FROM amd64/ubuntu:22.04
 
+# Hello world
 # update all software download sources
 RUN DEBIAN_FRONTEND=noninteractive      \
     apt update
@@ -94,6 +95,9 @@ RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.d
 RUN apt-get update && apt-get install -y \
     chromium-chromedriver
 
+# Install python dep
+RUN pip install selenium && pip install python-dotenv
+
 # clean up installations
 RUN DEBIAN_FRONTEND=noninteractive      \
     apt --fix-broken install         -y
@@ -110,7 +114,10 @@ EXPOSE 443
 EXPOSE 2399
 EXPOSE 5003
 EXPOSE 4444
- 
+
+ARG VERSION
+RUN echo $VERSION
+
 # when containers run, start this
 # command as root to initialize
 # user management

@@ -1,8 +1,15 @@
 *.env
-/data/*
+/data*
 /certificates/*
 /license/*
 Assisted Install.txt
 Assisted Install.txt.bak
 *.deb
-*.deb*
+*.fmcert
+*.zip
+*.settings
+/filemaker-installs/*.rtf
+/filemaker-installs/README_*.txt
+/filemaker-installs/versions/*
+/filemaker-installs/current/*
+__pycache__
