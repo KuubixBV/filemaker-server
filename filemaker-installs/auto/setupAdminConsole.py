@@ -96,19 +96,19 @@ def load_backup_schedules():
 
     # Redirect to page
     driver.get("https://localhost/admin-console/app/backups/backupschedules")
-    print("Trying to restore backup schedueles...")
-    restore_schedueles("/install/schedueles/backups/fms_settings.settings")
+    print("Trying to restore backup schedules...")
+    restore_schedules("/install/schedules/backups/fms_settings.settings")
 
 # Load the script schedules backup
 def load_script_schedules():
 
     # Redirect to page
     driver.get("https://localhost/admin-console/app/configuration/schedules")
-    print("Trying to restore script schedueles...")
-    restore_schedueles("/install/schedueles/scripts/fms_settings.settings")
+    print("Trying to restore script schedules...")
+    restore_schedules("/install/schedules/scripts/fms_settings.settings")
 
-# Loads or saves a backup scheduele or script schedule
-def restore_schedueles(file):
+# Loads or saves a backup schedule or script schedule
+def restore_schedules(file):
 
     # Check if the backup file exists
     if not os.path.exists(file):

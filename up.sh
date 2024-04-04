@@ -2,8 +2,6 @@
 source ./filemaker-installs/auto/.env
 source ./init.sh
 
-# TODO: fix "Schedule" typo 
-
 # Check if .env is loaded correctly
 if [ ! -n "$name" ] || [ ! -n "$hostname" ] || [ ! -n "$httpPort" ] || [ ! -n "$httpsPort" ] || [ ! -n "$filemakerVersionPath" ] || [ ! -n "$certificatePath" ] || [ ! -n "$filemakerAutoInstallerPath" ] || [ ! -n "$filemakerDataPath" ] || [ ! -n "$filemakerServerServicePath" ] || [ ! -n "$filemakerLicensePath" ]; then
    echo "Could not load needed data... Do you have a .env file? Are you missing key-values?"
@@ -24,7 +22,7 @@ docker run                                                                      
  --volume $filemakerLicensePath:"/install/license"                                      \
  --volume $certificatePath:"/install/certificates"                                      \
  --volume $filemakerAutoInstallerPath:"/install/auto"                                   \
- --volume $filemakerScheduelePath:"/install/schedueles"                                 \
+ --volume $filemakerSchedulePath:"/install/schedules"                                 \
  --volume $filemakerServerServicePath:"/install/shortcuts"                              \
  --volume $filemakerDataPath:"/opt/FileMaker/FileMaker Server/Data"                     \
  fmsdocker:ubuntu22.04-fms$VERSION
