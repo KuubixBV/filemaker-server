@@ -154,7 +154,7 @@ echo "<VirtualHost *:10073>
    ErrorLog ${APACHE_LOG_DIR}/error.log
    CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>" > "/etc/apache2/sites-available/japi.mastermeubel.be.conf"
-echo "Listen 0.0.0.0:10073" > "/etc/apache2/ports.conf"
+echo "Listen 10073" > "/etc/apache2/ports.conf"
 
 a2enmod rewrite
 a2dissite 000-default.conf
