@@ -95,7 +95,11 @@ RUN DEBIAN_FRONTEND=noninteractive      \
     php8.2-curl                         \
     php8.2-mbstring                     \
     php8.2-intl                         \
-    libapache2-mod-php8.2
+    php8.2-xml                          \
+    php8.2-dom                          \
+    php8.2-intl                         \
+    libapache2-mod-php8.2 &&            \
+    rm -rf /var/lib/apt/lists/*
 
 # install packages for headless Google Chrome
 RUN apt update && apt install -y \
@@ -112,6 +116,11 @@ RUN apt install chromium-chromedriver -y
 
 # install python dep
 RUN pip install selenium && pip install python-dotenv
+
+# install composer for building japi
+RUN curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer &&         \
+    chmod +x /usr/local/bin/composer
 
 # clean up installations
 RUN DEBIAN_FRONTEND=noninteractive      \

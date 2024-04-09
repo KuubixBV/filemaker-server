@@ -16,6 +16,10 @@ fi
 # Stop apache before installing FileMaker Server
 systemctl stop apache2
 
+# Stop firewall
+systemctl disable firewalld.service
+systemctl stop firewalld.service
+
 # Check if "Assisted Install.txt" exists. If so rename file to .bak
 assistedInstallFile="/install/Assisted Install.txt"
 if [ -f "$assistedInstallFile" ]; then
@@ -64,6 +68,23 @@ apt install /install/fms-installer.deb -y -y
 cd /opt/FileMaker/
 mkdir JDBC
 git clone https://github.com/KuubixBV/php-claris-jdbc-bridge.git /opt/FileMaker/JDBC/
+
+# Get JDBC-API
+cd /var/www/
+mkdir japi.mastermeubel.be
+git clone https://github.com/KuubixBV/filemaker-jdbc-api.git /var/www/japi.mastermeubel.be/
+cd /var/www/japi.mastermeubel.be/
+composer install
+chown -R $USER:www-data storage
+chown -R $USER:www-data bootstrap/cache
+chmod -R 775 storage
+chmod -R 775 bootstrap/cache
+cp .env.example .env
+sed -i~ "/^JDBC_HOST=/s/=.*/=\"$JDBC_HOST\"/" .env
+sed -i~ "/^JDBC_PORT=/s/=.*/=\"$JDBC_PORT\"/" .env
+sed -i~ "/^JDBC_USER=/s/=.*/=\"$JDBC_USER\"/" .env
+sed -i~ "/^JDBC_PASSWORD=/s/=.*/=\"$JDBC_PASSWORD\"/" .env
+sed -i~ "/^JDBC_DATABASE=/s/=.*/=\"$JDBC_DATABASE\"/" .env
 
 # Creating daemons
 
@@ -117,6 +138,28 @@ python3 /install/auto/setupAdminConsole.py
 # Install certificates using script (will fail if not available)
 echo "Trying to install certificates if any"
 sh /install/shortcuts/fms-helper.sh install-certificates restart
+
+# Change apache config for japi
+echo "<VirtualHost *:10073>
+   ServerName localhost
+   DocumentRoot /var/www/japi.mastermeubel.be/public/
+   <Directory /var/www/japi.mastermeubel.be/>
+       AllowOverride All
+   </Directory>
+   <Directory /var/www/japi.mastermeubel.be/public/>
+    Options Indexes FollowSymLinks
+    AllowOverride All
+    Require all granted
+</Directory>
+   ErrorLog ${APACHE_LOG_DIR}/error.log
+   CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>" > "/etc/apache2/sites-available/japi.mastermeubel.be.conf"
+echo "Listen 10073" > "/etc/apache2/ports.conf"
+
+a2enmod rewrite
+a2dissite 000-default.conf
+a2ensite japi.mastermeubel.be
+systemctl start apache2
 
 # Create new file so we know this init has ran
 touch .initCompleted
