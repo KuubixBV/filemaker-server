@@ -25,9 +25,9 @@ case "$1" in
 
         # Import certificate
         fmsadmin certificate import "$certificatePath/cert.pem" --keyfile "$certificatePath/privkey.pem" --intermediateCA "$certificatePath/fullchain.pem" -u "$filemakerUsername" -p "$filemakerPassword" -y
-        if [[ "$2" == "restart" ]]; then
-            ./install/shortcuts/fms-helper down
-            ./install/shortcuts/fms-helper up
+        if [ "$2" = "restart" ]; then
+            bash ./install/shortcuts/fms-helper.sh down
+            bash ./install/shortcuts/fms-helper.sh up
         fi
         ;;
     *)
