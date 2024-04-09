@@ -27,7 +27,8 @@ docker run                                                                      
  --volume $filemakerSchedulePath:"/install/schedules"                                   \
  --volume $filemakerServerServicePath:"/install/shortcuts"                              \
  --volume $filemakerDataPath:"/opt/FileMaker/FileMaker Server/Data"                     \
- fmsdocker:ubuntu22.04-fms$VERSION
+ fmsdocker:ubuntu22.04-fms$VERSION                                                      \
+ --bind 0.0.0.0
 
 # Run init in docker
 docker exec -it $name$VERSION /install/auto/init.sh
