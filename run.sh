@@ -14,12 +14,12 @@ docker run                                                                      
  --privileged                                                                           \
  --name $name$VERSION                                                                   \
  --hostname $hostname                                                                   \
- --publish $xPort:"32582"                                                               \
- --publish $httpPort:"80"                                                               \
- --publish $httpsPort:"443"                                                             \
- --publish $japiPort:"10073"                                                             \
- --publish $pjBridgePort:"4444"                                                         \
- --publish $filemakerPort:"5003"                                                        \
+ --publish 0.0.0.0:$xPort:"32582"                                                       \
+ --publish 0.0.0.0:$httpPort:"80"                                                       \
+ --publish 0.0.0.0:$httpsPort:"443"                                                     \
+ --publish 0.0.0.0:$japiPort:"10073"                                                    \
+ --publish 0.0.0.0:$pjBridgePort:"4444"                                                 \
+ --publish 0.0.0.0:$filemakerPort:"5003"                                                \
  --volume $filemakerVersionPath:"/install"                                              \
  --volume $filemakerLicensePath:"/install/license"                                      \
  --volume $certificatePath:"/install/certificates"                                      \
@@ -27,7 +27,6 @@ docker run                                                                      
  --volume $filemakerSchedulePath:"/install/schedules"                                   \
  --volume $filemakerServerServicePath:"/install/shortcuts"                              \
  --volume $filemakerDataPath:"/opt/FileMaker/FileMaker Server/Data"                     \
- --bind 0.0.0.0                                                                         \
  fmsdocker:ubuntu22.04-fms$VERSION                                                      
 
 # Run init in docker
