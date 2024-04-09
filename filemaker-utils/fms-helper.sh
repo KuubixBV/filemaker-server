@@ -26,8 +26,9 @@ case "$1" in
         # Import certificate
         fmsadmin certificate import "$certificatePath/cert.pem" --keyfile "$certificatePath/privkey.pem" --intermediateCA "$certificatePath/fullchain.pem" -u "$filemakerUsername" -p "$filemakerPassword" -y
         if [ "$2" = "restart" ]; then
+
             # Note this will close all databases are you sure you want to continue?
-            read -rep "WARNING: This will close all active databases! Write \"I understand\" if you want to continue!`echo $'\n> '`" choice
+            read -rp "WARNING: This will close all active databases! Write \"I understand\" if you want to continue!`echo $'\n> '`" choice
             choiseLower=`echo "$choice" | tr '[:upper:]' '[:lower:]'` 
             if [ "$choiseLower" != "i understand" ]; then
                 echo "User aborted - manual restart needed to apply the certs."
