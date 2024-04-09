@@ -23,12 +23,11 @@ case "$1" in
             exit 1
         fi
 
-        # Check if process is started
-        if [ -f "$PIDFILE" ]; then
-            fmsadmin certificate import "$certificatePath/cert.pem" --keyfile "$certificatePath/privkey.pem" --intermediateCA "$certificatePath/fullchain.pem" -u "$filemakerUsername" -p "$filemakerPassword" -y
-            echo "Certificates installed. Manual fms-restart needed"
-        else
-            echo "$SERVICE_NAME is not running."
+        # Import certificate
+        fmsadmin certificate import "$certificatePath/cert.pem" --keyfile "$certificatePath/privkey.pem" --intermediateCA "$certificatePath/fullchain.pem" -u "$filemakerUsername" -p "$filemakerPassword" -y
+        if [ "$2" == "restart" ]; then
+            fms-down
+            fms-up
         fi
         ;;
     *)

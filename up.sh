@@ -14,6 +14,7 @@ docker run                                                                      
  --privileged                                                                           \
  --name $name$VERSION                                                                   \
  --hostname $hostname                                                                   \
+ --publish $xPort:"32582"                                                               \
  --publish $httpPort:"80"                                                               \
  --publish $httpsPort:"443"                                                             \
  --publish $pjBridgePort:"4444"                                                         \
@@ -22,7 +23,7 @@ docker run                                                                      
  --volume $filemakerLicensePath:"/install/license"                                      \
  --volume $certificatePath:"/install/certificates"                                      \
  --volume $filemakerAutoInstallerPath:"/install/auto"                                   \
- --volume $filemakerSchedulePath:"/install/schedules"                                 \
+ --volume $filemakerSchedulePath:"/install/schedules"                                   \
  --volume $filemakerServerServicePath:"/install/shortcuts"                              \
  --volume $filemakerDataPath:"/opt/FileMaker/FileMaker Server/Data"                     \
  fmsdocker:ubuntu22.04-fms$VERSION

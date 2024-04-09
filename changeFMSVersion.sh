@@ -90,7 +90,7 @@ fi
 # Copy over fms-installer.deb to /current/fms-installer.deb
 mkdir -p "./filemaker-installs/current";
 cp "$installPath/fms-installer.deb" "./filemaker-installs/current/fms-installer.deb"
-echo "VERSION=$version" >> "./filemaker-installs/current/version.sh"
+echo "VERSION=$version" > "./filemaker-installs/current/version.sh"
 
 # Warn user to rebuild
 echo "Current version has changed to $version"

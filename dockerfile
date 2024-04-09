@@ -1,6 +1,5 @@
 FROM amd64/ubuntu:22.04
 
-# Hello world
 # update all software download sources
 RUN DEBIAN_FRONTEND=noninteractive      \
     apt update
@@ -73,29 +72,45 @@ RUN DEBIAN_FRONTEND=noninteractive      \
         wget                            \
         gnupg2                          \
         software-properties-common      \
-        wget                            \
         zlib1g
- 
+
 # install user management
 RUN DEBIAN_FRONTEND=noninteractive      \
     apt install                      -y \
         init
 
-# Install packages for headless Google Chrome
-RUN apt-get update && apt-get install -y \
-    xvfb \
-    libxi6 \
-    libgconf-2-4
+# install php and apache for the jdbc-api
+RUN DEBIAN_FRONTEND=noninteractive      \
+    apt install                      -y \
+        apache2
 
-# Install Google Chrome
+RUN DEBIAN_FRONTEND=noninteractive      \
+    add-apt-repository ppa:ondrej/php
+
+RUN DEBIAN_FRONTEND=noninteractive      \
+    apt install                     -y  \
+    php8.2                              \
+    php8.2-cli                          \
+    php8.2-bz2                          \
+    php8.2-curl                         \
+    php8.2-mbstring                     \
+    php8.2-intl                         \
+    libapache2-mod-php8.2
+
+# install packages for headless Google Chrome
+RUN apt update && apt install -y \
+        xvfb                             \
+        libxi6                           \
+        libgconf-2-4
+
+# install Google Chrome
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
     && apt install -y ./google-chrome-stable_current_amd64.deb || apt-get install -f -y
 
-# Install ChromeDriver
-RUN apt-get update && apt-get install -y \
-    chromium-chromedriver
+# install Chrome Driver
+RUN apt install chromium-chromedriver -y
 
-# Install python dep
+# install python dep
 RUN pip install selenium && pip install python-dotenv
 
 # clean up installations
@@ -106,20 +121,16 @@ RUN DEBIAN_FRONTEND=noninteractive      \
 RUN DEBIAN_FRONTEND=noninteractive      \
     apt clean                        -y
  
-# document the ports that should be
-# published when filemaker server
-# is installed
+# ports to expose
 EXPOSE 80
 EXPOSE 443
 EXPOSE 2399
 EXPOSE 5003
 EXPOSE 4444
+EXPOSE 32582
 
+# Code to make the docker image unique depening on the version
 ARG VERSION
 RUN echo $VERSION
-
-# when containers run, start this
-# command as root to initialize
-# user management
 USER root
 CMD ["/sbin/init"]

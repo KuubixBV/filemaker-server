@@ -5,7 +5,6 @@ if [ -f ".initCompleted" ] ; then
    echo "Init has already ran..."
    exit 0
 fi
-
 . /install/auto/.env
 
 # Check if .env is loaded correctly
@@ -13,6 +12,9 @@ if [ ! -n "$filemakerUsername" ] || [ ! -n "$filemakerPassword" ] || [ ! -n "$fi
    echo "Could not load needed data... Do you have a .env file? Are you missing key-values?"
    exit 1
 fi
+
+# Stop apache before installing FileMaker Server
+systemctl stop apache2
 
 # Check if "Assisted Install.txt" exists. If so rename file to .bak
 assistedInstallFile="/install/Assisted Install.txt"
@@ -114,7 +116,7 @@ python3 /install/auto/setupAdminConsole.py
 
 # Install certificates using script (will fail if not available)
 echo "Trying to install certificates if any"
-sh /install/shortcuts/fms-helper.sh install-certificates
+sh /install/shortcuts/fms-helper.sh install-certificates restart
 
 # Create new file so we know this init has ran
 touch .initCompleted
