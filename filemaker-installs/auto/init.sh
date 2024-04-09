@@ -137,7 +137,7 @@ python3 /install/auto/setupAdminConsole.py
 
 # Install certificates using script (will fail if not available)
 echo "Trying to install certificates if any"
-sh /install/shortcuts/fms-helper.sh install-certificates restart
+sh /install/shortcuts/fms-helper.sh install-certificates restart force
 
 # Change apache config for japi
 echo "<VirtualHost *:10073>
