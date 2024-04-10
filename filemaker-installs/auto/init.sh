@@ -27,7 +27,7 @@ systemctl stop apache2
 # Stop firewall -- THIS SHIT THING HAS MADE YENTL AND ME CRY! - NUKED IT!
 systemctl disable firewalld.service
 systemctl stop firewalld.service
-systemctl mask ---now firewalld
+systemctl mask --now firewalld
 
 # Check if "Assisted Install.txt" exists. If so rename file to .bak
 assistedInstallFile="/install/Assisted Install.txt"
