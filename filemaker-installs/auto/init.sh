@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Function to handle SIGTERM
+#shutdown() {
+#   /install/shortcuts/shutdown.sh
+#}
+
+# Trap SIGTERM
+#trap shutdown SIGTERM
+
 # Check if file exists
 if [ -f ".initCompleted" ] ; then 
    echo "Init has already ran..."
@@ -16,9 +24,10 @@ fi
 # Stop apache before installing FileMaker Server
 systemctl stop apache2
 
-# Stop firewall
+# Stop firewall -- THIS SHIT THING HAS MADE YENTL AND ME CRY! - NUKED IT!
 systemctl disable firewalld.service
 systemctl stop firewalld.service
+systemctl mask ---now firewalld
 
 # Check if "Assisted Install.txt" exists. If so rename file to .bak
 assistedInstallFile="/install/Assisted Install.txt"
@@ -137,7 +146,7 @@ python3 /install/auto/setupAdminConsole.py
 
 # Install certificates using script (will fail if not available)
 echo "Trying to install certificates if any"
-sh /install/shortcuts/fms-helper.sh install-certificates restart force
+bash /install/shortcuts/fms-helper.sh install-certificates restart force
 
 # Change apache config for japi
 echo "<VirtualHost *:10073>
