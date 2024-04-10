@@ -8,9 +8,6 @@
 # Trap SIGTERM
 #trap shutdown SIGTERM
 
-# Setting timezone
-timedatectl set-timezone "Europe/Brussels"
-
 # Check if file exists
 if [ -f ".initCompleted" ] ; then 
    echo "Init has already ran..."
