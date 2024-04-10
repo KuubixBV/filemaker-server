@@ -1,5 +1,5 @@
 FROM amd64/ubuntu:22.04
-ENV TZ="Europe/Brusselsa"
+ENV TZ="Europe/Brussels"
 
 # update all software download sources
 RUN DEBIAN_FRONTEND=noninteractive      \
