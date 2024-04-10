@@ -36,8 +36,8 @@ case "$1" in
                     exit 1
                 fi
             fi
-            bash ./install/shortcuts/fms-helper.sh down
-            bash ./install/shortcuts/fms-helper.sh up
+            bash /install/shortcuts/fms-helper.sh down
+            bash /install/shortcuts/fms-helper.sh up
         fi
         ;;
     *)
