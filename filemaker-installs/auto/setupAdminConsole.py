@@ -18,19 +18,19 @@ import time
 import os
 
 # Globals
-filemakerUsername = ""
-filemakerPassword = ""
+FM_USERNAME = ""
+FM_PASSWORD = ""
 chrome_options = None
 driver = None
 
 # Function to init module
 def init():
-    global filemakerUsername, filemakerPassword, chrome_options, driver
+    global FM_USERNAME, FM_PASSWORD, chrome_options, driver
 
     # Load environment variables
     load_dotenv("/install/auto/.env")
-    filemakerUsername = os.getenv('filemakerUsername')
-    filemakerPassword = os.getenv('filemakerPassword')
+    FM_USERNAME = os.getenv('FM_USERNAME')
+    FM_PASSWORD = os.getenv('FM_PASSWORD')
 
     # Start chrome driver
     chrome_options = Options()
@@ -46,8 +46,8 @@ def login():
     # Login using username and password from .env
     print("Trying to login...")
     driver.get("https://localhost/admin-console/signin")
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "inputUserName"))).send_keys(filemakerUsername)
-    driver.find_element(By.ID, "inputPassword").send_keys(filemakerPassword)
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "inputUserName"))).send_keys(FM_USERNAME)
+    driver.find_element(By.ID, "inputPassword").send_keys(FM_PASSWORD)
     driver.find_element(By.ID, "LOGN_Butn_SignIn").click()
     print("Logged in!")
 

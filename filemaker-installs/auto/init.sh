@@ -10,24 +10,27 @@
 
 # Check if file exists
 if [ -f ".initCompleted" ] ; then 
-   echo "Init has already ran..."
+   echo "Init has already run..."
    exit 0
 fi
+
 . /install/auto/.env
 
 # Check if .env is loaded correctly
-if [ ! -n "$filemakerUsername" ] || [ ! -n "$filemakerPassword" ] || [ ! -n "$filemakerPincode" ]; then
+if [ ! -n "$FM_USERNAME" ] || [ ! -n "$FM_PASSWORD" ] || [ ! -n "$FM_PIN" ]; then
    echo "Could not load needed data... Do you have a .env file? Are you missing key-values?"
    exit 1
 fi
 
-# Stop apache before installing FileMaker Server
-systemctl stop apache2
-
-# Stop firewall -- THIS SHIT THING HAS MADE YENTL AND ME CRY! - NUKED IT!
+# Stop firewall -- THIS SHIT THING HAS MADE YENTL AND ME CRY! - NUKED IT! THIS SHOULD BE EXECUTED FIRST
 systemctl disable firewalld.service
 systemctl stop firewalld.service
 systemctl mask --now firewalld
+echo "Firewall disabled - hopefully!"
+
+# Stop apache before installing FileMaker Server
+systemctl enable apache2
+systemctl stop apache2
 
 # Check if "Assisted Install.txt" exists. If so rename file to .bak
 assistedInstallFile="/install/Assisted Install.txt"
@@ -55,11 +58,11 @@ License Accepted=1
 
 Deployment Options=0
 
-Admin Console User=$filemakerUsername
+Admin Console User=$FM_USERNAME
 
-Admin Console Password=$filemakerPassword
+Admin Console Password=$FM_PASSWORD
 
-Admin Console PIN=$filemakerPincode
+Admin Console PIN=$FM_PIN
 
 License Certificate Path=$licenseFile
 
@@ -89,9 +92,9 @@ chown -R $USER:www-data bootstrap/cache
 chmod -R 775 storage
 chmod -R 775 bootstrap/cache
 cp .env.example .env
-sed -i~ "/^JDBC_HOST=/s/=.*/=\"$JDBC_HOST\"/" .env
-sed -i~ "/^JDBC_PORT=/s/=.*/=\"$JDBC_PORT\"/" .env
-sed -i~ "/^JDBC_USER=/s/=.*/=\"$JDBC_USER\"/" .env
+sed -i~ "/^JDBC_HOST=/s/=.*/=\"localhost\"/" .env
+sed -i~ "/^JDBC_PORT=/s/=.*/=\"4444\"/" .env
+sed -i~ "/^JDBC_USER=/s/=.*/=\"$JDBC_USERNAME\"/" .env
 sed -i~ "/^JDBC_PASSWORD=/s/=.*/=\"$JDBC_PASSWORD\"/" .env
 sed -i~ "/^JDBC_DATABASE=/s/=.*/=\"$JDBC_DATABASE\"/" .env
 
@@ -113,18 +116,37 @@ RestartSec=5
 WantedBy=multi-user.target
 " > "/etc/systemd/system/jdbc.service"
 
-## Start all daemons
+# Create check_apache.sh script
+echo "#!/bin/bash
+if ! pgrep apache2 > /dev/null
+then
+    /usr/sbin/apache2ctl -D FOREGROUND
+fi
+" > /usr/local/bin/check_apache.sh
+
+chmod +x /usr/local/bin/check_apache.sh
+
+# Create the systemd service for check_apache.sh
+echo "[Unit]
+Description=Apache2 Health Check
+[Service]
+ExecStart=/usr/local/bin/check_apache.sh
+Restart=always
+User=root
+[Install]
+WantedBy=multi-user.target
+" > /etc/systemd/system/check_apache.service
+
+# Start all daemons
 systemctl daemon-reload
 systemctl enable jdbc
 systemctl start jdbc
 
-# Install alias
+# Enable and start the apache check service
+systemctl enable check_apache.service
+systemctl start check_apache.service
 
-## fms
-echo "alias fms-up='sh /install/shortcuts/fms-helper.sh up'" >> /root/.bashrc
-echo "alias fms-down='sh /install/shortcuts/fms-helper.sh down'" >> /root/.bashrc
-echo "alias fms-restart='sh /install/shortcuts/fms-helper.sh down && sh /install/shortcuts/fms-helper.sh up'" >> /root/.bashrc
-echo "alias fms-install-certificates='sh /install/shortcuts/fms-helper.sh install-certificates'" >> /root/.bashrc
+# Install alias
 
 ## fmsadmin
 echo "alias fmsadmin-up='fmsadmin start adminserver'" >> /root/.bashrc
@@ -136,17 +158,32 @@ echo "alias jdbc-up='sh /opt/FileMaker/JDBC/jdbc.sh up'" >> /root/.bashrc
 echo "alias jdbc-down='sh /opt/FileMaker/JDBC/jdbc.sh down'" >> /root/.bashrc
 echo "alias jdbc-restart='sh /opt/FileMaker/JDBC/jdbc.sh down && sh /opt/FileMaker/JDBC/jdbc.sh up'" >> /root/.bashrc
 
-## all
-echo "alias all-up='fms-up && fmsadmin-up && jdbc-up'" >> /root/.bashrc
-echo "alias all-down='fms-down && fmsadmin-down && jdbc-down'" >> /root/.bashrc
-echo "alias all-restart='fms-down && fmsadmin-down && jdbc-down && fms-up && fmsadmin-up && jdbc-up'" >> /root/.bashrc
-
 # Setup admin console to enable JDBC/ODBC
 python3 /install/auto/setupAdminConsole.py
 
-# Install certificates using script (will fail if not available)
+# Install certificates using script (will abort if not available)
 echo "Trying to install certificates if any"
-bash /install/shortcuts/fms-helper.sh install-certificates restart force
+. /install/auto/.env
+certificatePath="/install/certificates"
+
+# Check if folder exists
+install=true
+if [ -d "$certificatePath" ]; then
+   echo "$certificatePath is not a directory. Cannot find certificate files."
+   install=false
+fi
+
+# Check if needed files are present
+if [ $install && ! -f "$certificatePath/cert.pem" ] || [ ! -f "$certificatePath/privkey.pem" ] || [ ! -f "$certificatePath/fullchain.pem" ]; then
+   echo "Not all files are present: $certificatePath/cert.pem, $certificatePath/privkey.pem and $certificatePath/fullchain.pem should all be present."
+   install=false
+fi
+
+# Import certificate if install is true
+if $install; then
+   fmsadmin certificate import "$certificatePath/cert.pem" --keyfile "$certificatePath/privkey.pem" --intermediateCA "$certificatePath/fullchain.pem" -u "$FM_USERNAME" -p "$FM_PASSWORD" -y
+   echo "Restart of docker container needed before certificates are valid! Please do this manually using manager.sh!"
+fi
 
 # Change apache config for japi
 echo "<VirtualHost *:10073>
@@ -170,5 +207,5 @@ a2dissite 000-default.conf
 a2ensite japi.mastermeubel.be
 systemctl start apache2
 
-# Create new file so we know this init has ran
+# Create new file so we know this init has run
 touch .initCompleted

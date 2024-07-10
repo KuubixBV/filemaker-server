@@ -12,4 +12,5 @@ Assisted Install.txt.bak
 /filemaker-installs/README_*.txt
 /filemaker-installs/versions/*
 /filemaker-installs/current/*
+/generated/*
 __pycache__
