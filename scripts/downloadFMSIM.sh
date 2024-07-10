@@ -1,6 +1,6 @@
 #!/bin/bash
 source ./filemaker-installs/auto/.env
-source ./versions.sh
+source ./scripts/versions.sh
 
 # Check if .env is loaded correctly
 if [ -z "$NAME" ]; then
@@ -86,12 +86,3 @@ if [ ! -f "$installPath/fms-installer.deb" ]; then
      echo "Could not get the fms-installer.deb from the installer..."
      exit 1
 fi
-
-# Copy over fms-installer.deb to /current/fms-installer.deb
-mkdir -p "./filemaker-installs/current";
-cp "$installPath/fms-installer.deb" "./filemaker-installs/current/fms-installer.deb"
-echo "VERSION=$version" > "./filemaker-installs/current/version.sh"
-
-# Warn user to rebuild
-echo "Current version has changed to $version"
-echo "Please rebuild after changing versions. Please note to review the .env file - changes may be needed - be aware of port-collisions and mount-collisions!!!"

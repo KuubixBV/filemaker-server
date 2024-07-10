@@ -23,10 +23,12 @@ if [ ! -n "$FM_USERNAME" ] || [ ! -n "$FM_PASSWORD" ] || [ ! -n "$FM_PIN" ]; the
 fi
 
 # Stop firewall -- THIS SHIT THING HAS MADE YENTL AND ME CRY! - NUKED IT! THIS SHOULD BE EXECUTED FIRST
+echo "<--- FIREWALL DISABLED --->"
+service systemd-logind start
 systemctl disable firewalld.service
 systemctl stop firewalld.service
 systemctl mask --now firewalld
-echo "Firewall disabled - hopefully!"
+echo "<--- FIREWALL DISABLED --->"
 
 # Stop apache before installing FileMaker Server
 systemctl enable apache2

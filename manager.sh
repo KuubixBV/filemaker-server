@@ -199,6 +199,7 @@ check_certificate_files() {
 # Function to build the Docker image
 build_image() {
     docker image build -t fmsdocker:ubuntu22.04-fms$VERSION ./ --build-arg VERSION=$VERSION
+    echo "build done"
     run_container
 }
 
@@ -230,12 +231,15 @@ ssh_container() {
 
 # Function to download FileMaker Server installation media
 download_fmsim() {
-    bash scripts/downloadFMSIM.sh
+    read -p "Enter version {old|new|stable|specific}: " downloadVersion
+    bash scripts/downloadFMSIM.sh $downloadVersion
 }
 
 # Function to set the FileMaker Server version
 set_version() {
-    bash scripts/switchFMSIM.sh
+    read -p "Enter version {old|new|stable|specific}: " setVersion
+    bash scripts/switchFMSIM.sh $setVersion
+    source ./filemaker-installs/current/version.sh
 }
 
 # Function to start all FileMaker databases
@@ -289,7 +293,7 @@ while true; do
             ;;
         2)
             if ! $container_running && ! $container_exists; then
-                safety_barrier && set_version
+                set_version
             else
                 print_error_disabled "Set FileMaker Server version"
             fi

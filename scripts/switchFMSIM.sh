@@ -1,6 +1,6 @@
 #!/bin/bash
 source ./filemaker-installs/auto/.env
-source ./versions.sh
+source ./scripts/versions.sh
 
 # Check what version to set
 if [ "$1" == "old" ]; then
