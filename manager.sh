@@ -175,7 +175,7 @@ safety_barrier() {
     echo "Warning: You are about to perform a risky operation."
     echo "Please type 'I understand' to proceed."
     read -p "Confirmation: " confirmation
-    if [[ "$confirmation" != "I understand" && "$confirmation" != "i understand" ]]; then
+    if [[ "$confirmation" != "I understand" && "$confirmation" != "i understand" && "$confirmation" != "" ]]; then
         echo "Operation cancelled."
         return 1
     fi

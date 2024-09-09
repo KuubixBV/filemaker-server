@@ -143,6 +143,7 @@ EXPOSE 2399
 EXPOSE 5003
 EXPOSE 4444
 EXPOSE 32582
+EXPOSE 10073
 
 # Code to make the docker image unique depening on the version
 ARG VERSION
