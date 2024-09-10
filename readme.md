@@ -30,6 +30,7 @@ Now let's give the following fields a value - I will explain what each field mea
 | JDBC_USERNAME    | api   | This is the username for a database you want to connect to. |
 | JDBC_PASSWORD    | myApiPassword   | This is the password for a database you want to connect to. |
 | JDBC_DATABASE    | database.fmp12   | This is the database you want to connect to. |
+| JDBC_TEST_QUERY    | SELECT * FROM Contacts   | This is the test query for JDBC connection test. |
 
 ### B. (optional) Importing of backup/script schedules
 
@@ -107,6 +108,8 @@ After adding the database surf to the local machine on the https port - followed
 After doing so login using the credentials u provided inside the .env file and open the database. You should now be able to add the host `localhost` in FileMaker and connect to the application.
 
 Now before continuing we need to make sure the API-user has ODBC/JDBC access. Go to `File -> Manage -> Security` and edit the access-rights for your API-user. Enable ODBC/JDBC access.
+
+*Note: I included a database.fmp12 file inside test-database folder, that can be used for testing purposes. The login credentials are Admin/admin. We can use this file to test the JDBC connection too.*
 
 ## 4. Installing SSL certificates
 

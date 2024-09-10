@@ -1,13 +1,5 @@
 #!/bin/bash
 
-# Function to handle SIGTERM
-#shutdown() {
-#   /install/shortcuts/shutdown.sh
-#}
-
-# Trap SIGTERM
-#trap shutdown SIGTERM
-
 # Check if file exists
 if [ -f ".initCompleted" ] ; then 
    echo "Init has already run..."
@@ -16,19 +8,14 @@ fi
 
 . /install/auto/.env
 
+# Wait for the OS to be ready
+sleep 15
+
 # Check if .env is loaded correctly
 if [ ! -n "$FM_USERNAME" ] || [ ! -n "$FM_PASSWORD" ] || [ ! -n "$FM_PIN" ]; then
    echo "Could not load needed data... Do you have a .env file? Are you missing key-values?"
    exit 1
 fi
-
-# Stop firewall -- THIS SHIT THING HAS MADE YENTL AND ME CRY! - NUKED IT! THIS SHOULD BE EXECUTED FIRST
-echo "<--- FIREWALL DISABLED --->"
-service systemd-logind start
-systemctl disable firewalld.service
-systemctl stop firewalld.service
-systemctl mask --now firewalld
-echo "<--- FIREWALL DISABLED --->"
 
 # Stop apache before installing FileMaker Server
 systemctl enable apache2
@@ -208,6 +195,12 @@ a2enmod rewrite
 a2dissite 000-default.conf
 a2ensite japi.mastermeubel.be
 systemctl start apache2
+
+# Stop firewall!!!
+echo "<--- FIREWALL DISABLED --->"
+systemctl disable ufw
+ufw disable
+echo "<--- FIREWALL DISABLED --->"
 
 # Create new file so we know this init has run
 touch .initCompleted

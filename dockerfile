@@ -18,7 +18,6 @@ RUN DEBIAN_FRONTEND=noninteractive      \
     apache2-utils                   \
     avahi-daemon                    \
     curl                            \
-    firewalld                       \
     fonts-baekmuk                   \
     fonts-liberation2               \
     fonts-noto                      \
