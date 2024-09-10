@@ -10,7 +10,7 @@ fi
 
 # Check if .version is loaded correctly
 if [ -z "$OLD" ] || [ -z "$NEW" ] || [ -z "$STABLE" ]; then
-   echo "Could not load needed data... Do you have a .version file? Are you missing key-values?"
+   echo "Could not load needed data... Do you have a versions.sh file? Are you missing key-values?"
    exit 1
 fi
 
