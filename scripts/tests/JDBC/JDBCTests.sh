@@ -1,6 +1,6 @@
 #!/bin/bash
-source ../../../filemaker-installs/auto/.env
-source ../../../filemaker-installs/current/version.sh
+source ./filemaker-installs/auto/.env
+source ./filemaker-installs/current/version.sh
 
 # Check if .env is loaded correctly
 if [ -z "$NAME" ]; then

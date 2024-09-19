@@ -121,6 +121,17 @@ show_menu() {
         printf "\t%02d. Import SSL certificates\n" $index
     fi
     echo ""
+    
+    echo "JDBC Server Section"
+    index=$((index + 1))
+    if ! $container_running || [ $total_databases_open -eq 0 ]; then
+        if [ "$show_disabled" = true ]; then
+            printf "\t%02d. Test JDBC Connection (disabled)\n" $index
+        fi
+    else
+        printf "\t%02d. Test JDBC Connection\n" $index
+    fi
+    echo ""
 
     echo "Type 'Exit' or use 'ctrl+c' to exit\n"
     echo "========================="
@@ -175,7 +186,7 @@ safety_barrier() {
     echo "Warning: You are about to perform a risky operation."
     echo "Please type 'I understand' to proceed."
     read -p "Confirmation: " confirmation
-    if [[ "$confirmation" != "I understand" && "$confirmation" != "i understand" && "$confirmation" != "" ]]; then
+    if [[ "$confirmation" != "I understand" && "$confirmation" != "i understand" ]]; then
         echo "Operation cancelled."
         return 1
     fi
@@ -264,6 +275,11 @@ import_ssl_certificates() {
     else
         echo "Import SSL certificates operation aborted."
     fi
+}
+
+# Function to set the FileMaker Server version
+test_jdbc() {
+    bash scripts/tests/JDBC/JDBCTests.sh
 }
 
 # Function to print the error
@@ -362,6 +378,13 @@ while true; do
                 import_ssl_certificates
             else
                 print_error_disabled "Import SSL certificates" "The container is not running."
+            fi
+            ;;
+        12)
+            if $container_running && [ $total_databases_open -gt 0 ]; then
+                test_jdbc
+            else
+                print_error_disabled "Test JDBC Connection" "The container is not running or not a single database is open."
             fi
             ;;
         Exit|exit)
