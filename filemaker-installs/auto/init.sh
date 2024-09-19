@@ -11,6 +11,16 @@ fi
 # Wait for the OS to be ready
 sleep 15
 
+# Stop firewall!!!
+echo "<--- FIREWALL DISABLED --->"
+systemctl disable ufw
+ufw disable
+systemctl disable firewalld.service
+systemctl stop firewalld.service
+systemctl mask --now firewalld
+systemctl mask --now ufw
+echo "<--- FIREWALL DISABLED --->"
+
 # Check if .env is loaded correctly
 if [ ! -n "$FM_USERNAME" ] || [ ! -n "$FM_PASSWORD" ] || [ ! -n "$FM_PIN" ]; then
    echo "Could not load needed data... Do you have a .env file? Are you missing key-values?"
@@ -200,6 +210,10 @@ systemctl start apache2
 echo "<--- FIREWALL DISABLED --->"
 systemctl disable ufw
 ufw disable
+systemctl disable firewalld.service
+systemctl stop firewalld.service
+systemctl mask --now firewalld
+systemctl mask --now ufw
 echo "<--- FIREWALL DISABLED --->"
 
 # Create new file so we know this init has run
