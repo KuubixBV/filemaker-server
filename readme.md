@@ -1,3 +1,4 @@
+Indy verwijderd eens privileged uit run file voor testen! Ask Yentl if u are confused why we needed to try this!
 # How to use this delicate piece of software
 
 Since I never want to redo any of this in my life, I suppose I need some documentation for future me. If you are reading this - you are in for a ride!
